@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 import { Plus, ChevronDown, Home, Utensils, Car, Zap, Play, MoreHorizontal } from 'lucide-react';
 
 const CATEGORIES = [
@@ -69,17 +70,13 @@ export default function ExpenseForm({ onExpenseAdded }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch('/api/expenses', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          amount: parseFloat(formData.amount),
-          paid: parseFloat(formData.paid) || 0,
-          balance: parseFloat(formData.balance) || 0,
-        }),
+      const res = await axios.post('/api/expenses', {
+        ...formData,
+        amount: parseFloat(formData.amount),
+        paid: parseFloat(formData.paid) || 0,
+        balance: parseFloat(formData.balance) || 0,
       });
-      if (res.ok) {
+      if (res.status === 201 || res.status === 200) {
         setFormData({ 
           ...formData, 
           title: '', 

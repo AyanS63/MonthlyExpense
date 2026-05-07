@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import axios from 'axios';
 import { createPortal } from 'react-dom';
 import { Trash2, AlertTriangle, Edit2 } from 'lucide-react';
 
@@ -15,8 +16,8 @@ export default function ExpenseList({
     setIsDeleting(true);
     
     try {
-      const res = await fetch(`/api/expenses/${expenseToDelete}`, { method: 'DELETE' });
-      if (res.ok) {
+      const res = await axios.delete(`/api/expenses/${expenseToDelete}`);
+      if (res.status === 200) {
         onExpenseDeleted();
       }
     } catch (error) {

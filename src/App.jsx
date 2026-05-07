@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import axios from 'axios';
 import DashboardStats from '@/components/DashboardStats';
 import ExpenseForm from '@/components/ExpenseForm';
 import ExpenseList from '@/components/ExpenseList';
@@ -35,14 +36,13 @@ export default function App() {
   const fetchExpenses = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (selectedMonth !== 'all') params.append('month', selectedMonth);
-      if (selectedYear !== 'all') params.append('year', selectedYear);
+      const params = {};
+      if (selectedMonth !== 'all') params.month = selectedMonth;
+      if (selectedYear !== 'all') params.year = selectedYear;
       
-      const res = await fetch(`/api/expenses?${params.toString()}`);
-      const data = await res.json();
-      if (data.success) {
-        setExpenses(data.data);
+      const res = await axios.get('/api/expenses', { params });
+      if (res.data.success) {
+        setExpenses(res.data.data);
       }
     } catch (error) {
       console.error('Failed to fetch expenses:', error);

@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import axios from 'axios';
 import { X, Save, Home, Utensils, Car, Zap, Play, MoreHorizontal, ChevronDown } from 'lucide-react';
 import { createPortal } from 'react-dom';
 
@@ -47,17 +48,13 @@ export default function EditExpenseModal({ expense, onClose, onUpdate }) {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await fetch(`/api/expenses/${expense._id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          amount: parseFloat(formData.amount),
-          paid: parseFloat(formData.paid) || 0,
-          balance: parseFloat(formData.balance) || 0,
-        }),
+      const res = await axios.put(`/api/expenses/${expense._id}`, {
+        ...formData,
+        amount: parseFloat(formData.amount),
+        paid: parseFloat(formData.paid) || 0,
+        balance: parseFloat(formData.balance) || 0,
       });
-      if (res.ok) {
+      if (res.status === 200) {
         onUpdate();
         onClose();
       }
